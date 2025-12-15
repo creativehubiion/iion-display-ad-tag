@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iion Display Ad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+        #ad-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #ad-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="ad-container">
+        <div class="loading" id="loading">Loading...</div>
+        <iframe id="ad-frame" style="display:none;"></iframe>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // Configuration
+        var CONFIG = {
+            // Path to current creative (relative to this file)
+            creativePath: 'creatives/current/index.html',
+
+            // Cache-busting strategy: 'timestamp' | 'version' | 'none'
+            cacheBusting: 'timestamp',
+
+            // Version number (used when cacheBusting = 'version')
+            // INCREMENT THIS when you push a new creative
+            version: '1.0.0',
+
+            // Fallback timeout (ms) - show error if creative doesn't load
+            loadTimeout: 10000
+        };
+
+        /**
+         * Generate cache-busting parameter
+         */
+        function getCacheBuster() {
+            switch (CONFIG.cacheBusting) {
+                case 'timestamp':
+                    return 'cb=' + Date.now();
+                case 'version':
+                    return 'v=' + CONFIG.version;
+                default:
+                    return '';
+            }
+        }
+
+        /**
+         * Build the creative URL with cache-busting
+         */
+        function getCreativeUrl() {
+            var baseUrl = CONFIG.creativePath;
+            var cacheBuster = getCacheBuster();
+
+            if (cacheBuster) {
+                return baseUrl + '?' + cacheBuster;
+            }
+            return baseUrl;
+        }
+
+        /**
+         * Load the creative into the iframe
+         */
+        function loadCreative() {
+            var iframe = document.getElementById('ad-frame');
+            var loading = document.getElementById('loading');
+            var creativeUrl = getCreativeUrl();
+
+            // Set up load timeout
+            var timeout = setTimeout(function() {
+                loading.textContent = 'Ad failed to load';
+                console.error('[iion-ad] Creative load timeout:', creativeUrl);
+            }, CONFIG.loadTimeout);
+
+            // Handle successful load
+            iframe.onload = function() {
+                clearTimeout(timeout);
+                loading.style.display = 'none';
+                iframe.style.display = 'block';
+                console.log('[iion-ad] Creative loaded:', creativeUrl);
+            };
+
+            // Handle load error
+            iframe.onerror = function() {
+                clearTimeout(timeout);
+                loading.textContent = 'Ad failed to load';
+                console.error('[iion-ad] Creative load error:', creativeUrl);
+            };
+
+            // Start loading
+            console.log('[iion-ad] Loading creative:', creativeUrl);
+            iframe.src = creativeUrl;
+        }
+
+        // Initialize on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadCreative);
+        } else {
+            loadCreative();
+        }
+    })();
+    </script>
+</body>
+</html>
