@@ -10,6 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script type="module" crossorigin src="./assets/index-BcUG3H5b.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-Cid04K8S.css">
+  <style>
+    /* Override position:fixed to position:absolute for transformed wrapper */
+    #game-wrapper { position: relative; }
+    #loading-screen, #video-container, #score-container, #audio-toggle,
+    #thegame, #final-screen, #instruction-overlay, .popup-text {
+      position: absolute !important;
+    }
+    #thegame { width: 540px !important; height: 960px !important; }
+    #video-container { width: 540px !important; height: 259px !important; }
+    #score-container { top: 269px !important; left: 10px !important; }
+    #audio-toggle { top: 269px !important; right: 10px !important; left: auto !important; }
+    #instruction-overlay { bottom: 120px !important; }
+    canvas { width: 540px !important; height: 960px !important; }
+  </style>
 </head>
 
 <body>
