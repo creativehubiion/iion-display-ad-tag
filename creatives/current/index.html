@@ -1,192 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/style.css" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="./favicon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>SHELL PLAYABLE</title>
 
-  <title>SOLO myob</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        color: #fbdf42;
+        background-color: #ffffff;
+      }
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      color: rgba(255, 255, 255, 0.87);
-      background-color: #000000;
-    }
+      #app {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: #ffffff;
+      }
 
-    #app {
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      .dummy {
+        position: fixed !important;
+        height: 100%;
+        width: auto;
+        left: 0;
+        right: 0;
+        margin: auto;
+        opacity: 0;
+        pointer-events: none;
+      }
 
-    .dummy {
-      position: fixed !important;
-      height: 100%;
-      width: auto;
-      left: 0;
-      right: 0;
-      margin: auto;
-      opacity: 0;
-    }
+      @font-face {
+        font-family: "shellHeavy";
+        src: url("https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/ShellHeavy.ttf");
+      }
 
-    /* @font-face {
-        font-family: "LarsseitBold";
-        src: url("assets/LarsseitBold.otf");
-      } */
+      @font-face {
+        font-family: "shellchsBook";
+        src: url("https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/ShellCHS-Book.ttf");
+      }
 
-    .dummy p {
-      opacity: 1;
-    }
+      .dummy p {
+        opacity: 1;
+      }
+      .dummy p:nth-child(1) { font-family: "shellHeavy"; }
+      .dummy p:nth-child(2) { font-family: "shellchsBook"; }
 
-    .dummy p:nth-child(1) {
-      font-family: "Poppins";
-    }
+      /* --- VUDOO CONTAINER STYLES --- */
+      #vudoo-ad-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 85%;
+        max-width: 450px;
+        max-height: 850px;
+        z-index: 20000;
+        pointer-events: none; /* Let clicks pass through when hidden */
+      }
 
-    .cooking-progress-container {
-      display: none;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40vw;
-      max-width: 500px;
-      min-width: 280px;
-      bottom: 15vh;
-      text-align: center;
-      z-index: 1000;
-    }
+      /* Styles for the iframe injected by Vudoo */
+      .shoppable-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: opacity 0.3s ease;
+      }
 
-    .cooking-progress-text {
-      color: #ffffff;
-      font-family: "Asap", sans-serif;
-      font-size: calc(12px + 0.4vw);
-      margin-bottom: 8px;
-      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-    }
+      /* Classes to toggle visibility (Recommended by Vudoo Docs) */
+      .shoppable-iframe-open {
+        opacity: 1;
+        z-index: 1;
+        pointer-events: auto; /* Enable clicks when open */
+      }
 
-    .cooking-progress-bar {
-      width: 100%;
-      height: calc(12px + 0.6vh);
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: calc(6px + 0.3vh);
-      overflow: hidden;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
-    }
+      .shoppable-iframe-hidden {
+        opacity: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
 
-    .cooking-progress-fill {
-      width: 0%;
-      height: 100%;
-      background-color: #fbdf42;
-      border-radius: calc(6px + 0.3vh);
-      transition: width 0.1s linear;
-    }
+      /* Test Button Style */
+      #test-trigger-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 30000;
+        padding: 10px 20px;
+        background: #fbdf42;
+        border: 2px solid #000;
+        font-family: sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-    #app {
-      position: fixed !important;
-      height: 100%;
-      width: auto;
-      left: 0;
-      right: 0;
-      margin: auto;
-      background-color: #4e47d3;
-    }
+      canvas { background-color: #fbdf42; }
+    </style>
 
-    canvas {
-      background-color: #000000;
-    }
+    <script type="module" crossorigin src="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/index-BCoD-mvb.js"></script>
+    <link rel="modulepreload" crossorigin href="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/phaser-C2RWnc_5.js">
+  </head>
 
-    /* Video container - positioned above game canvas */
-    #video-container {
-      width: 100%;
-      height: auto;
-      position: fixed;
-      z-index: 100;
-      /* display: none; */
-      /* Hidden until game starts */
-      background: transparent;
-      /* padding: 0 !important;
-      margin: 0 !important; */
-      height: 27vh !important;
-      overflow: hidden;
-      left: 0;
-      right: 0;
-      margin: auto;
-
-    }
-
-    #game-video {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
-      background: transparent;
-      /* margin-top: -1vh; */
-      left: 0;
-      right: 0;
-      margin: auto;
-      margin-top: -1vh;
-    }
-
-    /* Final screen - shows when video ends */
-    #final-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      display: none;
-      z-index: 200;
-      left: 0;
-      right: 0;
-      margin: auto;
-      background: black;
-      opacity: 0;
-      transition: opacity 1s ease-in;
-      cursor: pointer;
-    }
-
-    #final-bg {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #final-logo {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-    }
-
-    video {
-      left: 0;
-      right: 0;
-      margin: auto;
-    }
-  </style>
-  <script type="module" crossorigin src="./assets/index-BVPYfSdW.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/phaser-D3nGQX_-.js">
-</head>
-
-<body>
-  <!-- Video container at the top of the game -->
-  <div id="video-container">
-    <video id="game-video" preload="auto" playsinline poster="./assets/videoposter.jpg">
-      <source src="./assets/video.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <canvas id="confetti-canvas" style="
+  <body>
+    <canvas
+      id="confetti-canvas"
+      style="
         position: absolute;
         top: 0;
         left: 0;
@@ -196,35 +129,99 @@
         pointer-events: none;
         background: transparent !important;
         z-index: 10000;
-      "></canvas>
-  <div class="dummy">
-    <p>Hello</p>
-    <p>Hello</p>
-    <p>Hello</p>
-    <p>Hello</p>
-  </div>
+      "
+    ></canvas>
 
-  <!-- Final screen - shown when video ends -->
-  <div id="final-screen">
-    <img id="final-bg" src="./assets/finalpage.png" alt="Game Over">
-    <img id="final-logo" src="./assets/finallogo.png" alt="Logo">
-  </div>
+    <div class="dummy">
+      <p>Hello</p>
+      <p>Hello</p>
+      <p>Hello</p>
+      <p>Hello</p>
+    </div>
 
-  <div id="app">
-    <div id="game-container"></div>
-  </div>
-
-  <script>
-    window.bottomtext = "";
-    //GAM
-    window.trackingPath = "assets/";
-    window.trackingType =
-      "https://staging-dmp-producer.iion.io/tracker/impressions?platform=GAM&campaign_id=%ebuy!&publisher_id=%epid!&creative_id=%ecid!&maid=%%ADVERTISING_IDENTIFIER_PLAIN%%&page_url=%%SITE%%&height=%%HEIGHT%%&width=%%WIDTH%%&video_min_duration=%%VIDEO_DURATION%%&gdpr=${GDPR}&gdpr_consent=${GDPR_CONSENT_XXXX}&demand_id=%eadv!&line_item=%eaid!&event_name=";
-    window.setTracker = "";//"%%CLICK_URL_UNESC%%";
-    window.landingPageUrl =
-      window.setTracker +
-      "http://allkinds.com/au/fro-yo-quiz?utm_source=gaming&utm_medium=display&utm_campaign=froyo&utm_term=playable&utm_content=playablead";
-  </script>
-</body>
+    <div id="app">
+      <div id="game-container"></div>
+    </div>
 
+    <div id="vudoo-ad-container"></div>
+
+    <button id="test-trigger-btn">TEST SHOP</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script type="module">
+
+        import {
+            createShoppableApp,
+            onShoppableAppClose,
+            openShoppableProductPage,
+        } from "https://us.vudoo.io/sdk/shoppable";
+
+
+        const TAG_ID = "27501393452";       // Example Tag ID
+        const PRODUCT_ID = "B0BHF2HKY8"; // Example Product ID
+
+        // Initialize the app immediately
+        const app = createShoppableApp({
+            tagId: TAG_ID,
+        });
+
+        const container = document.getElementById("vudoo-ad-container");
+        const { iframe } = app;
+
+        //base class for styling
+        iframe.classList.add("shoppable-iframe");
+        // Start hidden
+        iframe.classList.add("shoppable-iframe-hidden");
+
+        // Helper: Hide the iframe
+        function hideShoppableIframe() {
+            iframe.classList.add("shoppable-iframe-hidden");
+            iframe.classList.remove("shoppable-iframe-open");
+            console.log("Vudoo shop hidden");
+        }
+
+        // Helper: Show the iframe
+        function showShoppableIframe() {
+            iframe.classList.add("shoppable-iframe-open");
+            iframe.classList.remove("shoppable-iframe-hidden");
+            console.log("Vudoo shop shown");
+        }
+
+        // --- BUTTON CLICK HANDLER ---
+        document.getElementById("test-trigger-btn").addEventListener("click", () => {
+            // 1. Ensure iframe is in the DOM (Lazy load)
+            if (!iframe.isConnected) {
+                container.appendChild(iframe);
+            }
+
+            // 2. Make it visible
+            showShoppableIframe();
+
+            // 3. Open the specific product page
+            // CORRECTION: Pass ID as a string, not an object
+            openShoppableProductPage(app, PRODUCT_ID);
+        });
+
+        // --- CLOSE EVENT HANDLER ---
+        // This listens for the "X" click inside the Vudoo UI
+        onShoppableAppClose(app, () => {
+            hideShoppableIframe();
+        });
+
+        // Expose functions globally if your Game JS needs to call them
+        window.openVudooShop = () => {
+             document.getElementById("test-trigger-btn").click();
+        };
+    </script>
+
+    <script>
+      //PLL
+      window.trackingPath = "https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets";
+      window.trackingType =
+        "https://staging-dmp-producer.iion.io/tracker/impressions?platform=RTB&campaign_id=%%campaignId%%&publisher_id=%%pubId%%&creative_id=%%creativeId%%&request_id=%%requestId%%&user_id=%%userId%%&ip_address=%%ip%%&app_id_bundle_id=%%bundle%%&maid=%%ifa%%&app_name=%%appName%%&os=%%os%%&user_agent=%%userAgentEnc%%&latitude=%%lat%%&longitude=%%lon%%&page_url=%%pageUrl%%&country=%%country%%&device_make=%%deviceMake%%&domain=%%domain%%&height=%%height%%&width=%%width%%&video_min_duration=%%videoMinDuration%%&video_max_duration=%%videoMaxDuration%%&content_genre=%%contgenre%%&content_cat=%%contcat%%&gdpr=%%gdpr%%&gdpr_consent=%%gdprConsent%%&demand_id=%%demandId%%&line_item=%%adgroupId%%&event_name=";
+      window.setTracker = "%%clickUrl%%";
+      window.landingPageUrl = window.setTracker + "https://ad.doubleclick.net/ddm/trackclk/N2237290.5697038LEVELUP_NLD/B33527230.422038086;dc_trk_aid=614427162;dc_trk_cid=236033358;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ltd=;dc_tdv=1";
+    </script>
+  </body>
 </html>
