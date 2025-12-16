@@ -6,287 +6,60 @@
     <title>Jump Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html, body {
-            width: 320px;
-            height: 480px;
-            overflow: hidden;
-            background: #000;
-        }
-
-        /* Game wrapper - scales 540x960 content to fit 320x480 */
-        #game-wrapper {
-            width: 540px;
-            height: 960px;
-            transform: scale(0.5);
-            transform-origin: top left;
-            position: relative;
-        }
-
-        #thegame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 540px;
-            height: 960px;
-        }
-
-        #video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            display: none;
-            background: #8B2FE8;
-            width: 540px;
-            height: 259px;
-            overflow: hidden;
-        }
-
-        #game-video {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-            margin-top: -10px;
-        }
-
-        #score-container {
-            position: absolute;
-            top: 269px;
-            left: 10px;
-            z-index: 500;
-            display: none;
-            align-items: center;
-            gap: 5px;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
-
-        #audio-toggle {
-            position: absolute;
-            top: 269px;
-            right: 10px;
-            z-index: 500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        #audio-toggle .icon-muted { display: block; }
-        #audio-toggle .icon-unmuted { display: none; }
-        #audio-toggle:not(.muted) .icon-muted { display: none; }
-        #audio-toggle:not(.muted) .icon-unmuted { display: block; }
-
-        #score-icon { width: 28px; height: 28px; }
-        #score-value {
-            font-family: 'Arial Black', Arial, sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            color: #FFD700;
-        }
-
-        #instruction-overlay {
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 150;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: none;
-        }
-
-        .instruction-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .arrows {
-            display: flex;
-            gap: 40px;
-            animation: arrowPulse 1.5s ease-in-out infinite;
-        }
-
-        .arrow {
-            width: 36px;
-            height: 36px;
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));
-        }
-
-        .arrow.left { animation: slideLeft 1s ease-in-out infinite; }
-        .arrow.right { animation: slideRight 1s ease-in-out infinite; }
-
-        .instruction-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            text-align: center;
-        }
-
-        @keyframes arrowPulse { 0%,100%{opacity:.7} 50%{opacity:1} }
-        @keyframes slideLeft { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-10px)} }
-        @keyframes slideRight { 0%,100%{transform:translateX(0)} 50%{transform:translateX(10px)} }
-
-        #final-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 540px;
-            height: 960px;
-            display: none;
-            z-index: 200;
-            background: #000;
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        #final-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        #final-logo {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .popup-text {
-            position: absolute;
-            top: 42%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 300;
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            color: #7B14F0;
-            background: #fff;
-            padding: 11px 21px;
-            border-radius: 22px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .popup-text.show {
-            animation: popupAnimation 2.8s cubic-bezier(.34,1.56,.64,1) forwards;
-        }
-
-        @keyframes popupAnimation {
-            0% { opacity:0; transform:translate(-50%,-30%) scale(.3); }
-            6% { opacity:1; transform:translate(-50%,-50%) scale(1.1); }
-            14% { transform:translate(-50%,-50%) scale(1); }
-            80% { opacity:1; transform:translate(-50%,-50%) scale(1); }
-            100% { opacity:0; transform:translate(-50%,-30%) scale(.3); }
-        }
-
-        #loading-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 540px;
-            height: 960px;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        #loading-screen.hidden { opacity: 0; pointer-events: none; }
-
-        .loading-content { text-align: center; color: white; }
-        .loading-content p { margin-top: 15px; font-size: 14px; color: #7B14F0; }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(123,20,240,0.3);
-            border-top-color: #7B14F0;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        canvas { touch-action: none; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-CS0MnbVi.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-rKZxo2hl.css">
 </head>
 <body>
-    <div id="game-wrapper">
-        <div id="loading-screen">
-            <div class="loading-content">
-                <div class="loading-spinner"></div>
-                <p>Loading...</p>
-            </div>
-        </div>
-
-        <div id="video-container">
-            <video id="game-video" preload="auto" playsinline muted>
-                <source src="./assets/video-CmqBBckk.mp4" type="video/mp4">
-            </video>
-        </div>
-
-        <div id="score-container">
-            <img id="score-icon" src="./assets/invoice-icon-DlfTb6vG.png" alt="$">
-            <span id="score-value">0</span>
-        </div>
-
-        <div id="audio-toggle" class="muted">
-            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M23 9L17 15M17 9L23 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-
-        <div id="thegame"></div>
-
-        <div id="instruction-overlay">
-            <div class="instruction-content">
-                <div class="arrows">
-                    <svg class="arrow left" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 6L9 12L15 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <svg class="arrow right" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 6L15 12L9 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <p class="instruction-text">SWIPE TO COLLECT PAYMENTS</p>
-            </div>
-        </div>
-
-        <div id="final-screen">
-            <img id="final-bg" src="./assets/finalpage-DFQjKlmq.png" alt="Game Over">
-            <img id="final-logo" src="./assets/finallogo-DhkMdYM1.png" alt="Logo">
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
         </div>
     </div>
 
-    <script type="module" crossorigin src="./assets/index-BcjyTOny.js"></script>
+    <div id="video-container">
+        <video id="game-video" preload="auto" playsinline muted>
+            <source src="./assets/video-CmqBBckk.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="score-container">
+        <img id="score-icon" src="./assets/invoice-icon-DlfTb6vG.png" alt="$">
+        <span id="score-value">0</span>
+    </div>
+
+    <div id="audio-toggle" class="muted">
+        <svg class="icon-muted" viewBox="0 0 24 24" fill="none">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23 9L17 15M17 9L23 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <div id="thegame"></div>
+
+    <div id="instruction-overlay">
+        <div class="instruction-content">
+            <div class="arrows">
+                <svg class="arrow left" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 6L9 12L15 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="arrow right" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 6L15 12L9 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <p class="instruction-text">SWIPE TO COLLECT PAYMENTS</p>
+        </div>
+    </div>
+
+    <div id="final-screen">
+        <img id="final-bg" src="./assets/finalpage-DFQjKlmq.png" alt="Game Over">
+        <img id="final-logo" src="./assets/finallogo-DhkMdYM1.png" alt="Logo">
+    </div>
+
 </body>
 </html>
