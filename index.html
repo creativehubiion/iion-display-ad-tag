@@ -22,19 +22,10 @@
             position: relative;
         }
         #ad-frame {
-            /* Original game dimensions */
-            width: 540px;
-            height: 960px;
+            width: 100%;
+            height: 100%;
             border: none;
             background: transparent;
-            /* Scale to fit 480px height */
-            transform: scale(0.5);
-            transform-origin: top center;
-            /* Center horizontally */
-            position: absolute;
-            top: 0;
-            left: 50%;
-            margin-left: -270px;
         }
         .loading {
             position: absolute;
@@ -59,8 +50,8 @@
 
         // Configuration
         var CONFIG = {
-            // Path to current creative - using GitHub Pages hosted creative
-            creativePath: 'https://creativehubiion.github.io/video-interaction-demo2/',
+            // Path to current creative (relative to this file)
+            creativePath: 'creatives/current/index.html',
 
             // Cache-busting strategy: 'timestamp' | 'version' | 'none'
             cacheBusting: 'timestamp',
