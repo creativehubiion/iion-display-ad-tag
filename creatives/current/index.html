@@ -44,6 +44,17 @@
         </svg>
     </div>
     <div id="thegame"></div>
+    <script>
+        // Force dimensions before Phaser loads
+        (function() {
+            var w = window.innerWidth || document.documentElement.clientWidth || 320;
+            var h = window.innerHeight || document.documentElement.clientHeight || 480;
+            var thegame = document.getElementById('thegame');
+            thegame.style.width = w + 'px';
+            thegame.style.height = h + 'px';
+            console.log('[game-init] Container set to:', w, 'x', h);
+        })();
+    </script>
     <!-- Instruction overlay for waiting state -->
     <div id="instruction-overlay">
         <div class="instruction-content">
