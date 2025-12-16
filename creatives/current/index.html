@@ -7,13 +7,12 @@
     <title>Jump Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-BcUG3H5b.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Cid04K8S.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-DHlOToW8.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-EeZ__CaP.css">
 </head>
 
 <body>
-    <div id="game-wrapper">
     <!-- Loading screen -->
     <div id="loading-screen">
         <div class="loading-content">
@@ -62,36 +61,12 @@
     <div id="final-screen">
         <img id="final-bg" src="./assets/finalpage-DFQjKlmq.png" alt="Game Over">
         <img id="final-logo" src="./assets/finallogo-DhkMdYM1.png" alt="Logo">
-    </div>
-    </div><!-- end game-wrapper -->
+    </div>
     <script>
-        (function() {
-            // Fixed scale: target 480px height from 960px original
-            var SCALE = 480 / 960; // = 0.5
-
-            function scaleGame() {
-                var wrapper = document.getElementById('game-wrapper');
-                if (!wrapper) return;
-
-                wrapper.style.width = '540px';
-                wrapper.style.height = '960px';
-                wrapper.style.transformOrigin = 'top center';
-                wrapper.style.transform = 'scale(' + SCALE + ')';
-                wrapper.style.position = 'absolute';
-                wrapper.style.top = '0';
-                wrapper.style.left = '50%';
-                wrapper.style.marginLeft = '-270px'; // half of 540px to center
-
-                // Video container matches original canvas width
-                document.getElementById('video-container').style.width = '540px';
-
-                console.log('[Scale] Applied fixed scale:', SCALE);
-            }
-
-            // Run after game initializes
-            setTimeout(scaleGame, 500);
-            setTimeout(scaleGame, 1500);
-        })();
+        setTimeout(() => {
+            console.log(document.querySelector('canvas').style.width);
+            document.getElementById('video-container').style.width = document.querySelector('canvas').style.width + "px";
+        }, 1000);
     </script>
 </body>
 
