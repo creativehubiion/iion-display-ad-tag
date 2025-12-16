@@ -64,8 +64,11 @@
     </div>
     <script>
         setTimeout(() => {
-            console.log(document.querySelector('canvas').style.width);
-            document.getElementById('video-container').style.width = document.querySelector('canvas').style.width + "px";
+            var canvas = document.querySelector('canvas');
+            if (canvas) {
+                var width = canvas.getBoundingClientRect().width;
+                document.getElementById('video-container').style.width = width + 'px';
+            }
         }, 1000);
     </script>
 </body>
