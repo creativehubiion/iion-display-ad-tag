@@ -67,6 +67,39 @@
             console.log(document.querySelector('canvas').style.width);
             document.getElementById('video-container').style.width = document.querySelector('canvas').style.width + "px";
         }, 1000);
+
+        // Responsive scaling for ad containers
+        (function() {
+            function scaleToFit() {
+                var containerWidth = window.innerWidth;
+                var containerHeight = window.innerHeight;
+
+                // Original game design size (approximate)
+                var designWidth = 360;
+                var designHeight = 640;
+
+                var scaleX = containerWidth / designWidth;
+                var scaleY = containerHeight / designHeight;
+                var scale = Math.min(scaleX, scaleY);
+
+                document.body.style.transformOrigin = 'top left';
+                document.body.style.transform = 'scale(' + scale + ')';
+                document.body.style.width = designWidth + 'px';
+                document.body.style.height = designHeight + 'px';
+                document.body.style.overflow = 'hidden';
+
+                // Center the scaled content
+                var offsetX = (containerWidth - (designWidth * scale)) / 2;
+                var offsetY = (containerHeight - (designHeight * scale)) / 2;
+                document.body.style.marginLeft = offsetX + 'px';
+                document.body.style.marginTop = offsetY + 'px';
+            }
+
+            // Scale on load and resize
+            window.addEventListener('load', scaleToFit);
+            window.addEventListener('resize', scaleToFit);
+            scaleToFit();
+        })();
     </script>
 </body>
 
