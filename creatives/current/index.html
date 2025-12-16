@@ -66,8 +66,8 @@
     </div><!-- end game-wrapper -->
     <script>
         (function() {
-            // Fixed scale: target 320px width from 540px original
-            var SCALE = 320 / 540; // = 0.593
+            // Fixed scale: target 480px height from 960px original
+            var SCALE = 480 / 960; // = 0.5
 
             function scaleGame() {
                 var wrapper = document.getElementById('game-wrapper');
@@ -75,11 +75,12 @@
 
                 wrapper.style.width = '540px';
                 wrapper.style.height = '960px';
-                wrapper.style.transformOrigin = 'top left';
+                wrapper.style.transformOrigin = 'top center';
                 wrapper.style.transform = 'scale(' + SCALE + ')';
                 wrapper.style.position = 'absolute';
                 wrapper.style.top = '0';
-                wrapper.style.left = '0';
+                wrapper.style.left = '50%';
+                wrapper.style.marginLeft = '-270px'; // half of 540px to center
 
                 // Video container matches original canvas width
                 document.getElementById('video-container').style.width = '540px';
