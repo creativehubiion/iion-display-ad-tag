@@ -63,13 +63,41 @@
         <img id="final-logo" src="./assets/finallogo-DhkMdYM1.png" alt="Logo">
     </div>
     <script>
-        setTimeout(() => {
-            var canvas = document.querySelector('canvas');
-            if (canvas) {
-                var width = canvas.getBoundingClientRect().width;
-                document.getElementById('video-container').style.width = width + 'px';
+        (function() {
+            function scaleGame() {
+                var canvas = document.querySelector('canvas');
+                if (!canvas) return;
+
+                // Get the actual canvas dimensions
+                var canvasRect = canvas.getBoundingClientRect();
+                var canvasWidth = canvasRect.width;
+                var canvasHeight = canvasRect.height;
+
+                // Get viewport dimensions
+                var viewportWidth = window.innerWidth;
+                var viewportHeight = window.innerHeight;
+
+                // Calculate scale to fit viewport
+                var scaleX = viewportWidth / canvasWidth;
+                var scaleY = viewportHeight / canvasHeight;
+                var scale = Math.min(scaleX, scaleY);
+
+                // Apply transform to body
+                if (scale > 1.1) { // Only scale up if significantly smaller
+                    document.body.style.transformOrigin = 'top center';
+                    document.body.style.transform = 'scale(' + scale + ')';
+                }
+
+                // Update video container width
+                document.getElementById('video-container').style.width = canvasWidth + 'px';
             }
-        }, 1000);
+
+            // Run after game initializes
+            setTimeout(scaleGame, 1500);
+            window.addEventListener('resize', function() {
+                setTimeout(scaleGame, 100);
+            });
+        })();
     </script>
 </body>
 
