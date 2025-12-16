@@ -66,45 +66,30 @@
     </div><!-- end game-wrapper -->
     <script>
         (function() {
+            // Fixed scale: target 320px width from 540px original
+            var SCALE = 320 / 540; // = 0.593
+
             function scaleGame() {
-                var canvas = document.querySelector('canvas');
                 var wrapper = document.getElementById('game-wrapper');
-                if (!canvas || !wrapper) return;
+                if (!wrapper) return;
 
-                // Get canvas dimensions as rendered by Phaser
-                var canvasWidth = canvas.width;
-                var canvasHeight = canvas.height;
-
-                // Get viewport dimensions
-                var viewportWidth = window.innerWidth;
-                var viewportHeight = window.innerHeight;
-
-                // Calculate scale to fit - use canvas pixel dimensions
-                var scaleX = viewportWidth / canvasWidth;
-                var scaleY = viewportHeight / canvasHeight;
-                var scale = Math.min(scaleX, scaleY);
-
-                console.log('[Scale] Canvas:', canvasWidth, 'x', canvasHeight, 'Viewport:', viewportWidth, 'x', viewportHeight, 'Scale:', scale);
-
-                // Apply scale to wrapper
-                wrapper.style.width = canvasWidth + 'px';
-                wrapper.style.height = canvasHeight + 'px';
+                wrapper.style.width = '540px';
+                wrapper.style.height = '960px';
                 wrapper.style.transformOrigin = 'top left';
-                wrapper.style.transform = 'scale(' + scale + ')';
+                wrapper.style.transform = 'scale(' + SCALE + ')';
                 wrapper.style.position = 'absolute';
                 wrapper.style.top = '0';
                 wrapper.style.left = '0';
 
-                // Update video container width to match canvas
-                document.getElementById('video-container').style.width = canvasWidth + 'px';
+                // Video container matches original canvas width
+                document.getElementById('video-container').style.width = '540px';
+
+                console.log('[Scale] Applied fixed scale:', SCALE);
             }
 
             // Run after game initializes
+            setTimeout(scaleGame, 500);
             setTimeout(scaleGame, 1500);
-            setTimeout(scaleGame, 3000); // Run again in case first was too early
-            window.addEventListener('resize', function() {
-                setTimeout(scaleGame, 100);
-            });
         })();
     </script>
 </body>
