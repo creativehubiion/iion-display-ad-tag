@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/style.css" />
+
+    <title>SHELL PLAYABLE</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        color: #fbdf42;
+        background-color: #ffffff;
+      }
+
+      #app {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: #ffffff;
+      }
+
+      .dummy {
+        position: fixed !important;
+        height: 100%;
+        width: auto;
+        left: 0;
+        right: 0;
+        margin: auto;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      @font-face {
+        font-family: "shellHeavy";
+        src: url("https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/ShellHeavy.ttf");
+      }
+
+      @font-face {
+        font-family: "shellchsBook";
+        src: url("https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/ShellCHS-Book.ttf");
+      }
+
+      .dummy p {
+        opacity: 1;
+      }
+      .dummy p:nth-child(1) { font-family: "shellHeavy"; }
+      .dummy p:nth-child(2) { font-family: "shellchsBook"; }
+
+      /* --- VUDOO CONTAINER STYLES --- */
+      #vudoo-ad-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 85%;
+        max-width: 450px;
+        max-height: 850px;
+        z-index: 20000;
+        pointer-events: none; /* Let clicks pass through when hidden */
+      }
+
+      /* Styles for the iframe injected by Vudoo */
+      .shoppable-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      /* Classes to toggle visibility (Recommended by Vudoo Docs) */
+      .shoppable-iframe-open {
+        opacity: 1;
+        z-index: 1;
+        pointer-events: auto; /* Enable clicks when open */
+      }
+
+      .shoppable-iframe-hidden {
+        opacity: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Test Button Style */
+      #test-trigger-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 30000;
+        padding: 10px 20px;
+        background: #fbdf42;
+        border: 2px solid #000;
+        font-family: sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      canvas { background-color: #fbdf42; }
+    </style>
+
+    <script type="module" crossorigin src="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/index-BCoD-mvb.js"></script>
+    <link rel="modulepreload" crossorigin href="https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets/phaser-C2RWnc_5.js">
+  </head>
+
+  <body>
+    <canvas
+      id="confetti-canvas"
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        pointer-events: none;
+        background: transparent !important;
+        z-index: 10000;
+      "
+    ></canvas>
+
+    <div class="dummy">
+      <p>Hello</p>
+      <p>Hello</p>
+      <p>Hello</p>
+      <p>Hello</p>
+    </div>
+
+    <div id="app">
+      <div id="game-container"></div>
+    </div>
+
+    <div id="vudoo-ad-container"></div>
+
+    <button id="test-trigger-btn">TEST SHOP</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script type="module">
+
+        import {
+            createShoppableApp,
+            onShoppableAppClose,
+            openShoppableProductPage,
+        } from "https://us.vudoo.io/sdk/shoppable";
+
+
+        const TAG_ID = "27501393452";       // Example Tag ID
+        const PRODUCT_ID = "B0BHF2HKY8"; // Example Product ID
+
+        // Initialize the app immediately
+        const app = createShoppableApp({
+            tagId: TAG_ID,
+        });
+
+        const container = document.getElementById("vudoo-ad-container");
+        const { iframe } = app;
+
+        //base class for styling
+        iframe.classList.add("shoppable-iframe");
+        // Start hidden
+        iframe.classList.add("shoppable-iframe-hidden");
+
+        // Helper: Hide the iframe
+        function hideShoppableIframe() {
+            iframe.classList.add("shoppable-iframe-hidden");
+            iframe.classList.remove("shoppable-iframe-open");
+            console.log("Vudoo shop hidden");
+        }
+
+        // Helper: Show the iframe
+        function showShoppableIframe() {
+            iframe.classList.add("shoppable-iframe-open");
+            iframe.classList.remove("shoppable-iframe-hidden");
+            console.log("Vudoo shop shown");
+        }
+
+        // --- BUTTON CLICK HANDLER ---
+        document.getElementById("test-trigger-btn").addEventListener("click", () => {
+            // 1. Ensure iframe is in the DOM (Lazy load)
+            if (!iframe.isConnected) {
+                container.appendChild(iframe);
+            }
+
+            // 2. Make it visible
+            showShoppableIframe();
+
+            // 3. Open the specific product page
+            // CORRECTION: Pass ID as a string, not an object
+            openShoppableProductPage(app, PRODUCT_ID);
+        });
+
+        // --- CLOSE EVENT HANDLER ---
+        // This listens for the "X" click inside the Vudoo UI
+        onShoppableAppClose(app, () => {
+            hideShoppableIframe();
+        });
+
+        // Expose functions globally if your Game JS needs to call them
+        window.openVudooShop = () => {
+             document.getElementById("test-trigger-btn").click();
+        };
+    </script>
+
+    <script>
+      //PLL
+      window.trackingPath = "https://tech-iion.github.io/advertiser-creatives/finalbuildfiles/shell/assets";
+      window.trackingType =
+        "https://staging-dmp-producer.iion.io/tracker/impressions?platform=RTB&campaign_id=%%campaignId%%&publisher_id=%%pubId%%&creative_id=%%creativeId%%&request_id=%%requestId%%&user_id=%%userId%%&ip_address=%%ip%%&app_id_bundle_id=%%bundle%%&maid=%%ifa%%&app_name=%%appName%%&os=%%os%%&user_agent=%%userAgentEnc%%&latitude=%%lat%%&longitude=%%lon%%&page_url=%%pageUrl%%&country=%%country%%&device_make=%%deviceMake%%&domain=%%domain%%&height=%%height%%&width=%%width%%&video_min_duration=%%videoMinDuration%%&video_max_duration=%%videoMaxDuration%%&content_genre=%%contgenre%%&content_cat=%%contcat%%&gdpr=%%gdpr%%&gdpr_consent=%%gdprConsent%%&demand_id=%%demandId%%&line_item=%%adgroupId%%&event_name=";
+      window.setTracker = "%%clickUrl%%";
+      window.landingPageUrl = window.setTracker + "https://ad.doubleclick.net/ddm/trackclk/N2237290.5697038LEVELUP_NLD/B33527230.422038086;dc_trk_aid=614427162;dc_trk_cid=236033358;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ltd=;dc_tdv=1";
+    </script>
+  </body>
+</html>
