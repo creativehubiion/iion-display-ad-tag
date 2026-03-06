@@ -65,6 +65,21 @@
         };
 
         /**
+         * Get GAM macros from parent URL params (resolved by GAM server-side)
+         * These are passed via the iframe tag in GAM creative code.
+         */
+        function getGAMMacros() {
+            var params = new URLSearchParams(window.location.search);
+            var macros = {};
+            params.forEach(function(value, key) {
+                // Skip cache-busting params
+                if (key === 'cb' || key === 'v') return;
+                macros[key] = value;
+            });
+            return macros;
+        }
+
+        /**
          * Generate cache-busting parameter
          */
         function getCacheBuster() {
@@ -79,14 +94,26 @@
         }
 
         /**
-         * Build the creative URL with cache-busting
+         * Build the creative URL with cache-busting and forwarded GAM macros
          */
         function getCreativeUrl() {
             var baseUrl = CONFIG.creativePath;
-            var cacheBuster = getCacheBuster();
+            var params = [];
 
+            // Add cache buster
+            var cacheBuster = getCacheBuster();
             if (cacheBuster) {
-                return baseUrl + '?' + cacheBuster;
+                params.push(cacheBuster);
+            }
+
+            // Forward GAM macros to the creative
+            var macros = getGAMMacros();
+            for (var key in macros) {
+                params.push(encodeURIComponent(key) + '=' + encodeURIComponent(macros[key]));
+            }
+
+            if (params.length > 0) {
+                return baseUrl + '?' + params.join('&');
             }
             return baseUrl;
         }
@@ -98,6 +125,9 @@
             var iframe = document.getElementById('ad-frame');
             var loading = document.getElementById('loading');
             var creativeUrl = getCreativeUrl();
+
+            // Store macros on window so creative can access via parent
+            window.iionGAMMacros = getGAMMacros();
 
             // Set up load timeout
             var timeout = setTimeout(function() {
@@ -111,6 +141,7 @@
                 loading.style.display = 'none';
                 iframe.style.display = 'block';
                 console.log('[iion-ad] Creative loaded:', creativeUrl);
+                console.log('[iion-ad] GAM Macros:', JSON.stringify(window.iionGAMMacros));
             };
 
             // Handle load error
