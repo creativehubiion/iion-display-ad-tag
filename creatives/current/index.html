@@ -74,6 +74,12 @@
       + '&event_name=';
 
     window.landingPageUrl = window.setTracker + "https://allkinds-merge-store-minigame.vercel.app/store-game.html";
+
+    // DEBUG: log all params and landing URL (remove after debugging)
+    console.log('[DEBUG] clickTag:', _p('clickTag', '(empty)'));
+    console.log('[DEBUG] setTracker:', window.setTracker);
+    console.log('[DEBUG] landingPageUrl:', window.landingPageUrl);
+    console.log('[DEBUG] all params:', window.location.search);
   </script>
 </body>
 </html>
