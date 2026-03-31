@@ -1,144 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>Shoes &amp; Sox</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Allkinds — Merge & Craft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    @font-face {
-      font-family: 'TheFuture';
-      font-weight: 900;
-      src: url('./assets/Fonts/TheFuture-Black.otf') format('opentype')
+    :root {
+      --color-bg: #e8e0f0;
+      --color-text: #5d4037;
+      --color-text-light: #8d6e63;
+      --color-pink: #f48fb1;
+      --font-primary: "Nunito", "Segoe UI", system-ui, sans-serif;
+      --font-weight-normal: 600;
+      --font-weight-bold: 800;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
     }
-
-    @font-face {
-      font-family: 'TheFuture';
-      font-weight: 700;
-      src: url('./assets/Fonts/TheFuture-Bold.otf') format('opentype')
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100dvh; overflow: hidden;
+      background: var(--color-bg); font-family: var(--font-primary);
+      font-weight: var(--font-weight-normal); color: var(--color-text);
+      -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; user-select: none;
     }
-
-    @font-face {
-      font-family: 'TheFuture';
-      font-weight: 500;
-      src: url('./assets/Fonts/TheFuture-Medium.otf') format('opentype')
+    #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
+    #pixi-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #pixi-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+    #loading-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--color-bg); transition: opacity 0.4s ease;
     }
-
-    @font-face {
-      font-family: 'Recoleta';
-      font-weight: 400;
-      src: url('./assets/Fonts/Recoleta-Regular.otf') format('opentype')
-    }
-
-    @font-face {
-      font-family: 'Pageantry';
-      font-weight: 300;
-      font-style: italic;
-      src: url('./assets/Fonts/Pageantry-LightItalic.otf') format('opentype')
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #0a0025
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center
-    }
-
-    canvas {
-      display: block;
-      touch-action: none;
-      position: relative;
-      z-index: 1
-    }
-
-    #endOverlay {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none
-    }
-
-    #endOverlay.active {
-      display: block;
-      pointer-events: auto
-    }
-
-    #carouselWrap {
-      position: absolute;
-      overflow: visible;
-      pointer-events: none
-    }
-
-    #carouselStrip {
-      display: flex;
-      will-change: transform;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      -webkit-perspective: 1000;
-      perspective: 1000
-    }
-
-    #carouselStrip img {
-      flex-shrink: 0;
-      pointer-events: none;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden
-    }
-
-    #endOverlay {
-      overflow: hidden
-    }
-
-    #endCta {
-      position: absolute;
-      cursor: pointer;
-      pointer-events: auto
-    }
-
-    #playAgainBtn {
-      position: absolute;
-      pointer-events: auto;
-      cursor: pointer;
-      font-family: 'TheFuture', sans-serif;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      letter-spacing: 1px;
-      text-decoration: underline;
-      text-underline-offset: 3px
-    }
+    .loading-logo { font-size: 36px; font-weight: var(--font-weight-bold); color: var(--color-pink); margin-bottom: 24px; letter-spacing: 2px; }
+    .loading-bar { width: 200px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+    .loading-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--color-pink), #ce93d8); border-radius: 4px; transition: width 0.3s ease; }
+    .hidden { display: none !important; }
   </style>
+  <script type="module" crossorigin src="https://creativehubiion.github.io/test-creatives/finalbuildfiles/2026/Mar/allkinds_merge_store_playable/assets/index-BVXcqyym.js"></script>
 </head>
-
 <body>
-  <canvas id="c"></canvas>
-  <div id="endOverlay">
-    <div id="carouselWrap">
-      <div id="carouselStrip"></div>
+  <div id="game-container">
+    <div id="pixi-canvas"></div>
+    <div id="loading-screen">
+      <div class="loading-logo">allkinds</div>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
     </div>
-    <img id="endCta" src="" alt="CTA">
-    <div id="playAgainBtn">PLAY AGAIN</div>
   </div>
-  <script>window.trackingPath = 'https://creativehubiion.github.io/advertiser-creatives/finalbuildfiles/2026/Mar/shoesneakers/assets/';
+  <script>
+    window.trackingPath = "https://creativehubiion.github.io/test-creatives/finalbuildfiles/2026/Mar/allkinds_merge_store_playable";
 
-    // Read GAM macros from URL params (resolved by GAM server-side, forwarded by iion-display-ad-tag)
+    // Read GAM macros from URL params (resolved by GAM server-side, forwarded by iion-display-ad-tag loader)
     var _params = new URLSearchParams(window.location.search);
     var _p = function(k, fallback) { return _params.get(k) || fallback || ''; };
 
@@ -155,11 +73,7 @@
       + '&line_item=' + encodeURIComponent(_p('line_item'))
       + '&event_name=';
 
-    window.landingPageUrl =
-      window.setTracker + "https://shoesandsox.com.au/?utm_source=programmatic&utm_medium=iion&utm_campaign=sneaker-month";
+    window.landingPageUrl = window.setTracker + "https://allkinds-merge-store-minigame.vercel.app/store-game.html";
   </script>
-  <script
-    src="https://creativehubiion.github.io/advertiser-creatives/finalbuildfiles/2026/Mar/shoesneakers/script.js"></script>
 </body>
-
 </html>
