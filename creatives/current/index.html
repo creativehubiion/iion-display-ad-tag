@@ -60,7 +60,19 @@
     var _params = new URLSearchParams(window.location.search);
     var _p = function(k, fallback) { return _params.get(k) || fallback || ''; };
 
-    window.setTracker = _p('clickTag', '');
+    // Reconstruct full DoubleClick click URL from fragmented params
+    // GAM's %%CLICK_URL_UNESC%% gets split by URLSearchParams because & chars aren't encoded
+    var _clickBase = _p('clickTag', '');
+    var _dcParams = ['sai','sig','fbs_aeid','urlfix','adurl'];
+    var _fullClickUrl = _clickBase;
+    if (_clickBase) {
+      _dcParams.forEach(function(k) {
+        var v = _p(k, null);
+        if (v !== null) _fullClickUrl += '&' + k + '=' + v;
+      });
+    }
+    window.setTracker = _fullClickUrl;
+
     window.trackingType = 'https://staging-dmp-producer.iion.io/tracker/impressions?platform=GAM'
       + '&campaign_id=' + encodeURIComponent(_p('campaign_id'))
       + '&publisher_id=' + encodeURIComponent(_p('publisher_id'))
@@ -74,6 +86,9 @@
       + '&event_name=';
 
     window.landingPageUrl = window.setTracker + "https://allkinds-merge-store-minigame.vercel.app/store-game.html";
+
+    console.log('[DEBUG] reconstructed clickUrl:', window.setTracker);
+    console.log('[DEBUG] landingPageUrl:', window.landingPageUrl);
 
     // DEBUG: log all params and landing URL (remove after debugging)
     console.log('[DEBUG] clickTag:', _p('clickTag', '(empty)'));
